@@ -2,6 +2,7 @@ package its340project;
 
 import java.awt.Color;
 import java.sql.*;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class NewJFrame extends javax.swing.JFrame {
@@ -711,7 +712,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private void jButtonNewGenMedHxInterviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonNewGenMedHxInterviewMouseClicked
         confirmNewInterview();
         emptyGenMedHxTextFields();
-        //startInterview();
+        startFullInterview();
     }//GEN-LAST:event_jButtonNewGenMedHxInterviewMouseClicked
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1099,13 +1100,67 @@ public class NewJFrame extends javax.swing.JFrame {
     
 /////////////////////////////// GEN MED HX INTERVIEW //////////////////////////
     
+    public static void startFullInterview(){
+        ArrayList list = new ArrayList();
+
+        startTobaccoInterview(list);
+        startAlcoholInterview(list);
+        startDrugInterview(list);
+        
+        for(int i=0; i<list.size(); i++){
+            System.out.println("ArrayList " + i + ": " + list.get(i));
+        }
+
+    }
     
+    public static ArrayList startTobaccoInterview(ArrayList list){
+        Tree tobaccoTree = new Tree();
+        
+        tobaccoTree.createRoot(1, "Do you smoke tobacco?");
+        tobaccoTree.addYesNode(1, 2, "Do you smoke daily?");
+        tobaccoTree.addYesNode(2, 4, "Do you smoke more than a pack per day?");
+        tobaccoTree.addNoNode(2, 5, "Do you smoke more than a pack per day?");
+        
+        Node root = tobaccoTree.getRoot();
+        tobaccoTree.queryBTree(root, list);
+
+        return list;
+    }
     
+    public static ArrayList startAlcoholInterview(ArrayList list){
+        Tree alcoholTree = new Tree();
+        
+        alcoholTree.createRoot(1, "Do you drink alcohol?");
+        alcoholTree.addYesNode(1, 2, "Do you drink daily?");
+        alcoholTree.addYesNode(2, 4, "Do you drink at least a case of beer per day?");
+        alcoholTree.addNoNode(2, 5, "Do you drink at least a case of beer per day?");
+        
+        Node root = alcoholTree.getRoot();
+        alcoholTree.queryBTree(root, list);
+        
+        return list;
+
+    }
     
+    public static ArrayList startDrugInterview(ArrayList list){
+        Tree drugTree = new Tree();
+        
+        drugTree.createRoot(1, "Do you take prescription pills?");
+        drugTree.addYesNode(1, 2, "Do you take pills daily?");
+        drugTree.addYesNode(2, 4, "Do you take at least two (2) prescription pills per day?");
+        drugTree.addNoNode(2, 5, "Do you take at least two (2) prescription pills per day?");
+        
+        Node root = drugTree.getRoot();
+        drugTree.queryBTree(root, list);
+        
+        return list;
+
+    }
     
-    
-    
-    
+    public static void startBloodInterview(){
+        //blood type and rh factor
+    }
+
     
     
 ///////////////////////////////////////////////////////////////////////////////
