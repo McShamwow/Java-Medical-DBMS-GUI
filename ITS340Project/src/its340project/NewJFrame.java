@@ -681,7 +681,7 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonSelectPatientMouseClicked
 
     private void jButtonDeletePatientMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonDeletePatientMouseClicked
-        deleteSelectedPatient();
+        deleteSelectedPatientAllRecords();
     }//GEN-LAST:event_jButtonDeletePatientMouseClicked
 
     private void jButtonNewPatientMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonNewPatientMouseClicked
@@ -710,6 +710,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButtonNewGenMedHxInterviewMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonNewGenMedHxInterviewMouseClicked
         confirmNewInterview();
+        emptyGenMedHxTextFields();
         //startInterview();
     }//GEN-LAST:event_jButtonNewGenMedHxInterviewMouseClicked
 
@@ -718,7 +719,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
 /////////////////////////////// QUERIES ///////////////////////////////////////
 
-        public void updatePatientList(){
+    public void updatePatientList(){
 
         String dbUrl = "jdbc:mysql://localhost:3306/hospital?autoReconnect=true&useSSL=false";
         String query = "SELECT LastName, FirstName FROM patienttable";
@@ -788,32 +789,33 @@ public class NewJFrame extends javax.swing.JFrame {
         }
     }
     
-    public void deleteSelectedPatient(){
+    public void deleteSelectedPatientAllRecords(){
         String dbUrl = "jdbc:mysql://localhost:3306/hospital?autoReconnect=true&useSSL=false";
         String patient = jComboBox1.getSelectedItem().toString().strip();
-        String query = "DELETE FROM patienttable WHERE CONCAT(FirstName, ' ', LastName)= ?;";
-        
+        String query = "DELETE generalmedicalhistorytable, patienttable FROM generalmedicalhistorytable INNER JOIN patienttable ON generalmedicalhistorytable.PatientID = patienttable.PatientID WHERE CONCAT(FirstName, ' ', LastName)= ?;";
+
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(dbUrl, "root", "");  
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, patient);
-            int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to do delete " + patient + " from the database?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int response = JOptionPane.showConfirmDialog(this, "Are you sure you want to do permenently delete " + patient + " from the database?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(response == JOptionPane.YES_OPTION){
                 int row = stmt.executeUpdate();
                 JOptionPane.showMessageDialog(null, row + " row deleted!");
                 updatePatientList();
+                emptyDemoTextFields();
+                emptyGenMedHxTextFields();
             }
             
             con.close();
-            JOptionPane.showMessageDialog(rootPane, patient + " deleted from database!");
 
         }
         catch(Exception e){
             e.printStackTrace(System.out);
             JOptionPane.showMessageDialog(rootPane, "Failed to delete from database!");
         }       
-
+        
     }
     
     public void addPatient(){
@@ -946,8 +948,8 @@ public class NewJFrame extends javax.swing.JFrame {
     
 ///////////////////////////////////////////////////////////////////////////////
     
+    
 /////////////////////////////// UTILITY FUNCTIONS /////////////////////////////
-
     
     public void emptyDemoTextFields(){
         jXTextField1.setText("");
@@ -1092,8 +1094,7 @@ public class NewJFrame extends javax.swing.JFrame {
         int reply = JOptionPane.showConfirmDialog(null, "Start new interview for " + jComboBox1.getSelectedItem().toString().strip() + "?", "Confirm", JOptionPane.YES_NO_OPTION);
     }
     
-    
-    
+       
 ///////////////////////////////////////////////////////////////////////////////
     
 /////////////////////////////// GEN MED HX INTERVIEW //////////////////////////
