@@ -1,4 +1,4 @@
-# ITS340_FinalProject
+# Java-Medical-DBMS-GU
 Creating an interactive Java Swing GUI for a hospital DBMS
 
 
